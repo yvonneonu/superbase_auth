@@ -1,28 +1,27 @@
 "use client";
 import React, { useState } from "react";
-import { supabase } from "./lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 
-export default function Home() {
-  const [signUpEmail, setSignUpEmail] = useState("");
-  const [signUpPassword, setSignUpPassword] = useState("");
-  const [signInError, setSignInError] = useState(null);
+export default function SignUp() {
+  const [signInEmail, setSignUpEmail] = useState("");
+  const [signInPassword, setSignUpPassword] = useState("");
+  const isFormValid = signInEmail && signInPassword; // Example form validation
+  const [loading, setLoading] = useState(false);
+  const [signInError, setSignInError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const isFormValid = signUpEmail && signUpPassword; // Example form validation
-  const [loading, setLoading] = useState(false);
-
-  const signIn = async (e) => {
+  const signUp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: signUpEmail,
-      password: signUpPassword,
+
+    const { error } = await supabase.auth.signUp({
+      email: signInEmail,
+      password: signInPassword,
     });
     setLoading(false);
     // if (error) setSignInError(error.message);
     // else alert("Login successful!");
-
     if (error) {
       setSignInError(error.message);
       setTimeout(() => {
@@ -39,11 +38,9 @@ export default function Home() {
   return (
     <div className="bg-indigo-700 w-full justify-center items-center flex h-screen">
       <div className=" w-[600px] bg-white p-10">
-        <form onSubmit={signIn}>
+        <form onSubmit={signUp}>
           <div className="my-8  ">
-            <div className="text-black text-2xl font-bold">
-              SIGN IN TO YOUR ACCOUNT
-            </div>
+            <div className="text-black text-2xl font-bold">SIGN UP</div>
 
             <div className="mt-5 w-full">
               <div className="">
@@ -57,7 +54,7 @@ export default function Home() {
                   type="email"
                   required
                   id="email"
-                  value={signUpEmail}
+                  value={signInEmail}
                   name="email"
                   onChange={(e) => setSignUpEmail(e.target.value)}
                   className="w-full h-12 px-4 mt-2 border border-cila-slate-200 text-cila-slate-700 font-lotar focus:outline-none focus:ring-2 focus:ring-cila-slate-700 focus:invalid:ring-0 focus:invalid:border-cila-red-300 invalid:text-cila-red-300 focus:border-transparent placeholder:font-lota autofill:bg-cila-slate-50"
@@ -79,7 +76,7 @@ export default function Home() {
                 required
                 id="password"
                 name="password"
-                value={signUpPassword}
+                value={signInPassword}
                 onChange={(e) => setSignUpPassword(e.target.value)}
                 className="w-full h-12 px-4 border border-cila-slate-200 text-cila-slate-700 focus:invalid:ring-0 focus:invalid:border-cila-red-300 invalid:text-cila-red-300 font-lotar focus:outline-none focus:ring-2 focus:ring-cila-slate-700 focus:border-transparent placeholder:font-lota autofill:bg-cila-slate-50 "
                 placeholder="Password"
@@ -95,7 +92,7 @@ export default function Home() {
                 `}
               disabled={!isFormValid}
             >
-              SIGN IN
+              SIGN UP
               {loading && (
                 <div role="status" className="inline ml-2">
                   <svg
@@ -130,8 +127,7 @@ export default function Home() {
             )}
 
             <div className="mt-10 flex flex-wor gap-20 justify-center">
-              <Link href={"/sign-up"}>Sign Up</Link>
-              <Link href={"/forgot-password"}>Forgot Password?</Link>
+              <Link href={"/"}>Sign In</Link>
             </div>
           </div>
         </form>
